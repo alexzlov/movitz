@@ -11,7 +11,7 @@
 ## Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ## Created at:    Sun Mar 10 20:20:11 2002
 ##                
-## $Id: udp6-send.py,v 1.1 2004/01/13 11:04:59 ffjeld Exp $
+## $Id: udp6-send.py,v 1.1.1.1 2004-01-13 11:04:59 ffjeld Exp $
 ##                
 ######################################################################
 

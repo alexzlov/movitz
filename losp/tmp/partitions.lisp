@@ -1,4 +1,4 @@
-;;;; $Id: partitions.lisp,v 1.1 2004/08/19 00:28:56 ffjeld Exp $
+;;;; $Id: partitions.lisp,v 1.1 2004-08-19 00:28:56 ffjeld Exp $
 
 (require :tmp/harddisk)
 

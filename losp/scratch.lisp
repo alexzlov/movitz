@@ -7,13 +7,23 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Distribution:  See the accompanying file COPYING.
 ;;;;                
-;;;; $Id: scratch.lisp,v 1.3 2008/02/23 22:28:55 ffjeld Exp $
+;;;; $Id: scratch.lisp,v 1.4 2008-03-07 23:38:16 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 
 (provide :scratch)
 
 (in-package los0)
+
+(defun test-bq (x y)
+  `(+ ,x ,y))
+
+
+#+ignore
+(defun d-bind (x)
+  (destructuring-bind (a (b &optional c) d &rest e &key f)
+      x
+    (values a b c d e f)))
 
 #+ignore
 (defun set.2 ()

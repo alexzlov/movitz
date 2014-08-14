@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Fri Aug 24 11:39:37 2001
 ;;;;                
-;;;; $Id: procfs-image.lisp,v 1.26 2006/05/15 19:49:23 ffjeld Exp $
+;;;; $Id: procfs-image.lisp,v 1.26 2006-05-15 19:49:23 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

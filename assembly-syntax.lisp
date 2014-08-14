@@ -9,7 +9,7 @@
 ;;;; Created at:    Thu Nov  9 17:34:37 2000
 ;;;; Distribution:  See the accompanying file COPYING.
 ;;;;                
-;;;; $Id: assembly-syntax.lisp,v 1.4 2004/09/06 10:07:03 ffjeld Exp $
+;;;; $Id: assembly-syntax.lisp,v 1.4 2004-09-06 10:07:03 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

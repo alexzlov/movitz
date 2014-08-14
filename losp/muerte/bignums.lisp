@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Sat Jul 17 19:42:57 2004
 ;;;;                
-;;;; $Id: bignums.lisp,v 1.18 2008/02/04 15:11:16 ffjeld Exp $
+;;;; $Id: bignums.lisp,v 1.18 2008-02-04 15:11:16 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

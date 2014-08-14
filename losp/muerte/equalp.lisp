@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Tue Mar 13 17:09:08 2001
 ;;;;                
-;;;; $Id: equalp.lisp,v 1.8 2007/03/21 21:54:12 ffjeld Exp $
+;;;; $Id: equalp.lisp,v 1.8 2007-03-21 21:54:12 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

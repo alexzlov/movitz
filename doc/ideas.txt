@@ -10,7 +10,7 @@
 ## Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ## Created at:    Fri Dec 12 19:19:39 2003
 ##                
-## $Id: ideas.txt,v 1.4 2007/03/15 16:11:17 ffjeld Exp $
+## $Id: ideas.txt,v 1.4 2007-03-15 16:11:17 ffjeld Exp $
 ##                
 ######################################################################
 

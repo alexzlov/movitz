@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Tue Oct  2 20:30:28 2001
 ;;;;                
-;;;; $Id: package.lisp,v 1.4 2004/04/21 16:24:05 ffjeld Exp $
+;;;; $Id: package.lisp,v 1.4 2004-04-21 16:24:05 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

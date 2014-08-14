@@ -9,7 +9,7 @@
 ;;;; Created at:    Mon Oct  9 20:52:58 2000
 ;;;; Distribution:  See the accompanying file COPYING.
 ;;;;                
-;;;; $Id: movitz.lisp,v 1.12 2007/03/13 20:40:10 ffjeld Exp $
+;;;; $Id: movitz.lisp,v 1.12 2007-03-13 20:40:10 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

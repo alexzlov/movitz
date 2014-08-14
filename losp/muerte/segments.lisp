@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Thu May  8 14:25:06 2003
 ;;;;                
-;;;; $Id: segments.lisp,v 1.19 2007/04/13 22:41:05 ffjeld Exp $
+;;;; $Id: segments.lisp,v 1.19 2007-04-13 22:41:05 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

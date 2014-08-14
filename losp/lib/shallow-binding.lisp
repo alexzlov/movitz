@@ -7,7 +7,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Distribution:  See the accompanying file COPYING.
 ;;;;                
-;;;; $Id: shallow-binding.lisp,v 1.2 2007/04/12 16:09:27 ffjeld Exp $
+;;;; $Id: shallow-binding.lisp,v 1.2 2007-04-12 16:09:27 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

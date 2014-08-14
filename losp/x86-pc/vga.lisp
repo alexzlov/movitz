@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Tue Sep 25 14:08:20 2001
 ;;;;                
-;;;; $Id: vga.lisp,v 1.14 2007/04/13 22:59:26 ffjeld Exp $
+;;;; $Id: vga.lisp,v 1.14 2007-04-13 22:59:26 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

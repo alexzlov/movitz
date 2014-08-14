@@ -1,4 +1,4 @@
-;;;; $Id: harddisk.lisp,v 1.4 2004/05/11 15:05:25 ffjeld Exp $
+;;;; $Id: harddisk.lisp,v 1.4 2004-05-11 15:05:25 ffjeld Exp $
 
 (require :lib/named-integers)
 

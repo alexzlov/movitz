@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Mon Aug 27 14:46:50 2001
 ;;;;                
-;;;; $Id: stream-image.lisp,v 1.13 2005/05/03 20:12:42 ffjeld Exp $
+;;;; $Id: stream-image.lisp,v 1.13 2005-05-03 20:12:42 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

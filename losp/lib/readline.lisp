@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Fri Nov  2 13:58:58 2001
 ;;;;                
-;;;; $Id: readline.lisp,v 1.9 2007/03/11 22:43:46 ffjeld Exp $
+;;;; $Id: readline.lisp,v 1.9 2007-03-11 22:43:46 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

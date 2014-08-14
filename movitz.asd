@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <ffjeld@common-lisp.net>
 ;;;; Created at:    Thu Jan 15 18:40:58 2004
 ;;;;                
-;;;; $Id: movitz.asd,v 1.3 2008/02/25 23:43:45 ffjeld Exp $
+;;;; $Id: movitz.asd,v 1.3 2008-02-25 23:43:45 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 
