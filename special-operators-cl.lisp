@@ -1,16 +1,16 @@
 ;;;;------------------------------------------------------------------
-;;;; 
+;;;;
 ;;;;    Copyright (C) 2000-2005,
 ;;;;    Department of Computer Science, University of Tromso, Norway
-;;;; 
+;;;;
 ;;;; Filename:      special-operators-cl.lisp
 ;;;; Description:   Special operators in the COMMON-LISP package.
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Fri Nov 24 16:31:11 2000
 ;;;; Distribution:  See the accompanying file COPYING.
-;;;;                
+;;;;
 ;;;; $Id: special-operators-cl.lisp,v 1.55 2008-07-09 19:57:02 ffjeld Exp $
-;;;;                
+;;;;
 ;;;;------------------------------------------------------------------
 
 (in-package movitz)
@@ -103,7 +103,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 			   (compiler-values-bind (&code init-code &functional-p functional-p
 						  &type type &returns init-register
 						  &final-form final-form)
-			       
+
 			       (compiler-call #'compile-form-unprotected
 				 :result-mode binding
 				 :env init-env
@@ -187,7 +187,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 		  (let ((tmp-binding (second (first body-code))))
 		    (print-code 'body body-code)
 		    (break "Yuhu: tmp ~S" tmp-binding)
-		    
+
 		    ))
 		 (t (let ((code
 			   (append
@@ -251,7 +251,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 					  :env init-env
 					  :defaults all)
 				      (check-type target lexical-binding)
-				      (change-class binding 'forwarding-binding 
+				      (change-class binding 'forwarding-binding
 						    :target-binding target)
 				      (let ((btype (if (multiple-value-call #'encoded-allp
 							 (type-specifier-encode
@@ -327,7 +327,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 								    ))))))
 				       ((typep final-form 'constant-object-binding)
 					#+ignore
-					(warn "type: ~S or ~S" final-form 
+					(warn "type: ~S or ~S" final-form
 					      (type-specifier-primary type))
 					(append (if functional-p
 						    nil
@@ -351,7 +351,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 						   :init-with-type ,(type-specifier-primary type))))))))
 				   (t init-code)))
 			    (when (plusp (num-specials local-env))
-			      `((:locally (:call (:edi ,(bt:slot-offset 'movitz-run-time-context
+			      `((:locally (:call (:edi ,(slot-offset 'movitz-run-time-context
 									'dynamic-variable-install))))
 				(:locally (:movl :esp (:edi (:edi-offset dynamic-env))))))
 			    body-code
@@ -361,7 +361,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 			      (warn "let spec ret: ~S, want: ~S ~S"
 				    body-returns result-mode let-var-specs)
 			      `((:movl (:esp ,(+ -4 (* 16 (num-specials local-env)))) :edx)
-				(:locally (:call (:edi ,(bt:slot-offset 'movitz-run-time-context
+				(:locally (:call (:edi ,(slot-offset 'movitz-run-time-context
 									'dynamic-variable-uninstall))))
 				(:locally (:movl :edx (:edi (:edi-offset dynamic-env))))
 				(:leal (:esp ,(* 16 (num-specials local-env))) :esp))))))
@@ -452,7 +452,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 	:forward all
 	:form `(muerte::with-cloak (,form1-returns ,form1-code t ,type)
 		 ,@rest-forms)))))
-  
+
 (define-special-operator multiple-value-call (&all all &form form &funobj funobj)
   (destructuring-bind (function-form &rest subforms)
       (cdr form)
@@ -521,7 +521,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 			    (:leal (:esp :edx) :esp)))))))))
 
 
-			    
+
 (define-special-operator multiple-value-bind (&all forward &form form &env env &funobj funobj
 						   &result-mode result-mode)
   (destructuring-bind (variables values-form &body body-and-declarations)
@@ -554,7 +554,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 			(t (movitz-env-add-binding local-env new-binding)))))
 	       (init-var-code
 		(case (first (operands values-returns))
-		  
+
 		  (t (append
 		      (make-result-and-returns-glue :multiple-values values-returns)
 		      (case (length lexical-bindings)
@@ -633,7 +633,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 	      :code (append values-code
 			    init-var-code
 			    body-code))))))))
-				   
+
 (define-special-operator setq (&all forward &form form &env env &funobj funobj &result-mode result-mode)
   (let ((pairs (cdr form)))
     (unless (evenp (length pairs))
@@ -650,7 +650,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 		    (typecase binding
 		      (symbol-macro-binding
 		       (compiler-values-bind (&code code &returns returns)
-			   (compiler-call #'compile-form-unprotected 
+			   (compiler-call #'compile-form-unprotected
 					  :defaults forward
 					  :result-mode sub-result-mode
 					  :form `(muerte.cl:setf ,var ,value-form))
@@ -693,7 +693,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 	:code code
 	:returns last-returns
 	:functional-p nil))))
-		  
+
 (define-special-operator tagbody (&all forward &funobj funobj &form form &env env)
   (let* ((save-esp-variable (gensym "tagbody-save-esp"))
 	 (lexical-catch-tag-variable (gensym "tagbody-lexical-catch-tag-"))
@@ -779,8 +779,8 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 	    (compiler-values ()
 	      :code code
 	      :returns :nothing)))))))
-			
-				
+
+
 (define-special-operator go (&all all &form form &env env &funobj funobj)
   (destructuring-bind (operator tag)
       form
@@ -819,7 +819,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 		      (:movl :eax :edx)
 		      (:clc)
 		      (:locally (:call (:edi (:edi-offset dynamic-jump-next))))))))))))
-		      
+
 ;;;		      (:locally (:movl :edx (:edi (:edi-offset dynamic-env)))) ; exit to next-env
 ;;;		      (:movl :edx :esp)	; enter non-local jump stack mode.
 ;;;		      (:movl (:esp) :edx) ; target stack-frame EBP
@@ -1014,7 +1014,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 			       (t :eax))))
 	       (compiler-values ()
 		 :code `((:load-constant ,movitz-name ,register)
-			 (:movl (,register ,(bt:slot-offset 'movitz-symbol 'function-value))
+			 (:movl (,register ,(slot-offset 'movitz-symbol 'function-value))
 				,register)
 			 (:globally (:cmpl (:edi (:edi-offset unbound-function))
 					   ,register))
@@ -1181,7 +1181,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 			  ,no-more-symbols
 			  (:popl :eax)	; remove extra pre-pushed tail
 			  (:movl :ecx :edx)
-			  (:locally (:call (:edi ,(bt:slot-offset 'movitz-run-time-context
+			  (:locally (:call (:edi ,(slot-offset 'movitz-run-time-context
 								  'dynamic-variable-install))))
 			  (:locally (:movl :esp (:edi (:edi-offset dynamic-env)))) ; install env
 			  ;; ecx = N/fixnum
@@ -1194,7 +1194,7 @@ where zot is not in foo's scope, but _is_ in foo's extent."
 			`((:popl :eax))) ; glue :push => :eax
 		      `((:movl (:esp) :edx) ; number of bindings
 			(:movl (:esp (:edx 4)) :edx) ; previous dynamic-env
-			(:locally (:call (:edi ,(bt:slot-offset 'movitz-run-time-context
+			(:locally (:call (:edi ,(slot-offset 'movitz-run-time-context
 								'dynamic-variable-uninstall))))
 			(:locally (:movl :edx (:edi (:edi-offset dynamic-env))))
 			(:popl :edx)	; number of bindings

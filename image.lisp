@@ -1,16 +1,16 @@
 ;;;;------------------------------------------------------------------
-;;;; 
+;;;;
 ;;;;    Copyright (C) 2001,2000, 2002-2005,
 ;;;;    Department of Computer Science, University of Tromso, Norway.
-;;;; 
+;;;;
 ;;;; Filename:      image.lisp
 ;;;; Description:   Construction of Movitz images.
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Sun Oct 22 00:22:43 2000
 ;;;; Distribution:  See the accompanying file COPYING.
-;;;;                
+;;;;
 ;;;; $Id: image.lisp,v 1.126 2008-07-18 13:15:40 ffjeld Exp $
-;;;;                
+;;;;
 ;;;;------------------------------------------------------------------
 
 (in-package movitz)
@@ -125,7 +125,7 @@
     :map-binary-read-delayed 'movitz-word-code-vector
     :binary-tag :primitive-function
     :binary-type code-vector-word)
-   
+
    (fast-car
     :binary-type code-vector-word
     :initform nil
@@ -217,7 +217,7 @@
     :binary-type code-vector-word
     :map-binary-write 'movitz-intern-code-vector
     :map-binary-read-delayed 'movitz-word-code-vector
-    :binary-tag :primitive-function)   
+    :binary-tag :primitive-function)
    (fast-cdr-car
     :binary-type code-vector-word
     :initform nil
@@ -270,7 +270,7 @@
     :map-binary-write 'movitz-intern-code-vector
     :map-binary-read-delayed 'movitz-word-code-vector
     :binary-tag :primitive-function)
-      
+
    ;;
    (boolean-one :binary-type :label)
    (not-nil				; not-nil, t-symbol and not-not-nil must be consecutive.
@@ -294,7 +294,7 @@
     :binary-type movitz-symbol
     :reader movitz-run-time-context-null-symbol
     :initarg :null-symbol)
-   
+
    (complicated-eql
     :initform 'muerte::complicated-eql
     :binary-type word
@@ -309,7 +309,7 @@
    (dynamic-env
     :binary-type word
     :initform 0)
-   
+
    (scratch1
     :binary-type word
     :initform 0)
@@ -461,7 +461,7 @@
   (assert (null registers))
   (lambda (jumper)
     (assert (= 0 (mod jumper 4)))
-    (bt:enum-value 'movitz::atomically-status
+    (enum-value 'movitz::atomically-status
 		   (list* :restart-jumper
 			  (cons :reset-status-p
 				(if reset-status-p 1 0))
@@ -585,7 +585,7 @@
 
 (defun class-object-offset (name)
   (let ((name (translate-program name :cl :muerte.cl)))
-    (+ (bt:slot-offset 'movitz-basic-vector 'data)
+    (+ (slot-offset 'movitz-basic-vector 'data)
        (* 4 (1+ (or (position name (image-classes-map *image*))
 		    (error "No class named ~S in class-map." name)))))))
 
@@ -747,7 +747,7 @@ a cons is an offset (the car) from some other code-vector (the cdr)."
 
 (defun make-initial-segment-descriptor-table ()
   (let ((u32-list
-	 (let ((bt:*endian* :little-endian))
+	 (let ((*endian* :little-endian))
 	   (merge-bytes (with-binary-output-to-list (octet-list)
 			  (mapcar (lambda (init-args)
 				    (write-binary 'segment-descriptor octet-list
@@ -768,7 +768,7 @@ a cons is an offset (the car) from some other code-vector (the cdr)."
     (movitz-read (make-movitz-vector (length u32-list)
 				     :initial-contents u32-list
 				     :element-type '(unsigned-byte 32)))))
-		     
+
 
 (defun make-movitz-image (&rest init-args &key start-address &allow-other-keys)
   (let ((*image* (apply #'make-instance 'symbolic-image
@@ -797,7 +797,7 @@ a cons is an offset (the car) from some other code-vector (the cdr)."
     *image*))
 
 (defun find-primitive-function (name)
-  "Given the NAME of a primitive function, look up 
+  "Given the NAME of a primitive function, look up
    that function's code-vector."
   (let ((code-vector
 	 (movitz-symbol-value (movitz-read name))))
@@ -1016,7 +1016,7 @@ a cons is an offset (the car) from some other code-vector (the cdr)."
 		       (stack-vector-position (- (+ stack-vector-address 512)
 						 load-address)))
 		  (declare (ignore stack-vector-position))
-		  #+ignore(warn "stack-v-pos: ~S => ~S" 
+		  #+ignore(warn "stack-v-pos: ~S => ~S"
 				stack-vector-position
 				stack-vector-word)
 		  (set-file-position stream (global-slot-position 'stack-vector) 'stack-vector)
@@ -1202,7 +1202,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 					:external-symbols (make-hash-table :test #'equal)
 					:internal-symbols (make-hash-table :test #'equal)
 					:nicknames nicks
-					:use-list (mapcar #'(lambda (up) 
+					:use-list (mapcar #'(lambda (up)
 							      (ensure-package (movitz-package-name (package-name up))
 									      up context))
 							  (package-use-list lisp-package)))))
@@ -1258,8 +1258,8 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 
 (defun run-time-context-find-slot (offset)
   "Return the name of the run-time-context slot located at offset."
-  (dolist (slot-name (bt:binary-record-slot-names 'movitz-run-time-context))
-    (when (= offset (bt:slot-offset 'movitz-run-time-context slot-name))
+  (dolist (slot-name (binary-record-slot-names 'movitz-run-time-context))
+    (when (= offset (slot-offset 'movitz-run-time-context slot-name))
       (return slot-name))))
 
 #-ia-x86
@@ -1272,7 +1272,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 	       (run-time-context-find-slot (asm:indirect-operand-offset operand))
 	       (not (member (asm:instruction-operator instruction)
 			    '(:leal :lea))))
-     collect (format nil "<Global slot ~A>" 
+     collect (format nil "<Global slot ~A>"
 		     (run-time-context-find-slot (asm:indirect-operand-offset operand)))
 ;;      when (and (typep operand 'ia-x86::operand-indirect-register)
 ;; 	       (eq 'ia-x86::edi (ia-x86::operand-register operand))
@@ -1346,7 +1346,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 		(= 1 (ia-x86::operand-scale operand))
 		(run-time-context-find-slot (ia-x86::operand-offset operand))
 		(not (typep instruction 'ia-x86-instr::lea)))
-      collect (format nil "<Global slot ~A>" 
+      collect (format nil "<Global slot ~A>"
 		      (run-time-context-find-slot (ia-x86::operand-offset operand)))
       when (and (typep operand 'ia-x86::operand-indirect-register)
 		(eq 'ia-x86::edi (ia-x86::operand-register operand))
@@ -1414,7 +1414,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 			    +movitz-fixnum-factor+)))
       collect (format nil "#x~X" (truncate (ia-x86::operand-value operand)
 					   +movitz-fixnum-factor+))))
-		  
+
 (defun movitz-disassemble (name  &rest args &key ((:image *image*) *image*) &allow-other-keys)
   (let* ((funobj (or (movitz-env-named-function name)
                      (error "~S has no function definition." name))))
@@ -1501,8 +1501,8 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 	      (push x *recursive-disassemble-remember-funobjs*)
 	      (terpri)
 	      (movitz-disassemble-funobj x))))))
-  
-  
+
+
 
 #+ia-x86
 (defun movitz-disassemble-funobj (funobj &key (name (movitz-funobj-name funobj)) ((:image *image*) *image*)
@@ -1743,7 +1743,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
     (movitz-symbol
      (let ((package (movitz-symbol-package object)))
        (cond
-	((eq *movitz-nil* package) 
+	((eq *movitz-nil* package)
 	 (if (member :setf-placeholder (movitz-symbol-flags object))
 	     (format nil "(internal:setf-intern ~A)"
 		     (movitz-make-upload-form (movitz-symbol-value object)))
@@ -1761,7 +1761,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
        (:character (format nil "\"~A\"" (movitz-print object)))
        (t (movitz-print object))))
     (t (format nil "~A" (movitz-print object)))))
-      
+
 
 (defun movitz-upload-function (name &optional (destination :bochs) (verbose nil))
   (unless (stringp destination)
@@ -1785,7 +1785,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
       #+allegro (if destination
 		    (excl::run-shell-command (format nil "./udp6-send.py ~A 1 ~S" destination command))
 		  command))))
-	    
+
 
 ;;; "Printer"
 
@@ -1824,9 +1824,9 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 					   'muerte::*initial-segment-descriptor-table* 'word)
 					  (image-ds-segment-base *image*))
 				      :ecx)
-			       (:movl (:ecx ,(bt:slot-offset 'movitz-symbol 'value))
+			       (:movl (:ecx ,(slot-offset 'movitz-symbol 'value))
 				      :ecx)
-			       (:addl ,(+ (bt:slot-offset 'movitz-basic-vector 'data)
+			       (:addl ,(+ (slot-offset 'movitz-basic-vector 'data)
 					  (image-ds-segment-base *image*))
 				      :ecx)
 			       (:movl :ecx (:esp -4))
@@ -1838,12 +1838,12 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 			      jmp-base
 			       (:subl '(:funcall ,(lambda (base dest)
 						    (+ (image-cs-segment-base *image*) (- dest) base))
-					
+
 					'jmp-base 'jmp-destination)
 				      (:esp))
 			       (:jmp-segment (:esp))
 			      jmp-destination
-			       
+
 			       (:movw ,(* 4 8) :cx)
 			       (:movw :cx :ds)
 			       (:movw :cx :es)
@@ -1871,7 +1871,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
 				      :eax)
 			       ;; (:compile-form (:result-mode :eax) 'muerte::*multiboot-data*)
 			       ;; (:shll ,+movitz-fixnum-shift+ :ebx)
-			       (:movl :ebx (:eax ,(bt:slot-offset 'movitz-symbol 'value)))
+			       (:movl :ebx (:eax ,(slot-offset 'movitz-symbol 'value)))
 			      no-multiboot)
 			       			       ;; Check that the stack works..
 ;;;			       (:pushl #xabbabeef)
@@ -1917,7 +1917,7 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
       ,l2 ((:gs-override) :movb :ah (10 :ebx)) ; 6
 
       (:shrl 16 :eax)
-      
+
       (:cmpb #x39 :al) (:jle ',l3) (:addb 7 :al)
       ,l3 ((:gs-override) :movb :al (6 :ebx)) ; 4
       (:cmpb #x39 :ah) (:jle ',l4) (:addb 7 :ah)
@@ -1928,7 +1928,6 @@ In sum this accounts for ~,1F%, or ~D bytes.~%;;~%"
       (:subl 2 :ebx)
       (:decb :cl)
       (:jnz ',loop-label))))
-    
+
 
 ;;;
-

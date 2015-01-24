@@ -1,15 +1,15 @@
 ;;;;------------------------------------------------------------------
-;;;; 
+;;;;
 ;;;;    Copyright (C) 2001,2000, 2002-2005,
 ;;;;    Department of Computer Science, University of Tromso, Norway
-;;;; 
+;;;;
 ;;;; Description:   A simple lisp compiler.
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Wed Oct 25 12:30:49 2000
 ;;;; Distribution:  See the accompanying file COPYING.
-;;;;                
+;;;;
 ;;;; $Id: compiler.lisp,v 1.205 2008-04-27 19:07:33 ffjeld Exp $
-;;;;                
+;;;;
 ;;;;------------------------------------------------------------------
 
 (in-package movitz)
@@ -29,7 +29,7 @@ heuristics that fire. Used for debugging the optimizer.")
 (defvar *compiler-use-cmov-p* nil
   "Allow the compiler to emit CMOV instructions, making the code
 incompatible with pre-pentium CPUs.")
-  
+
 (defvar *compiler-auto-stack-checks-p* t
   "Make every compiled function check upon entry that the
 stack-pointer is within bounds. Costs 3 code-bytes and a few cycles.")
@@ -291,7 +291,7 @@ Otherwise coerce funobj to class."
 						     funobj-env funobj
 						     :type 'function-env
 						     :declaration-context :funobj
-						     :declarations 
+						     :declarations
 						     (append clause-declarations
 							     declarations))))
 		    (function-form (list* 'muerte.cl::block
@@ -490,7 +490,7 @@ Side-effects each binding's binding-store-type."
 		    (t (setf (type-analysis-encoded-type analysis)
 			 (multiple-value-list
 			  (multiple-value-call
-			      #'encoded-types-or 
+			      #'encoded-types-or
 			    (values-list (type-analysis-encoded-type analysis))
 			    (type-specifier-encode type))))))))
 	       (analyze-code (code)
@@ -640,7 +640,7 @@ of all function-bindings seen."
 ;;;		     (warn "binding ~S of ~S is not local to ~S, replacing with ~S of ~S."
 ;;;			   binding (binding-env binding) funobj
 ;;;			   borrowing-binding (binding-env borrowing-binding))
-;;;		     (pushnew borrowing-binding 
+;;;		     (pushnew borrowing-binding
 ;;;			      (getf (binding-lended-p binding) :lended-to))
                     (dolist (usage usages)
                       (pushnew usage (borrowed-binding-usage borrowing-binding)))
@@ -810,7 +810,7 @@ of all function-bindings seen."
 	  (loop for (binding . pos) in borrower-map
 	      do (setf (borrowed-binding-reference-slot binding) pos))
 	  (return funobj))))
-    
+
 (defun layout-stack-frames (funobj)
   "Lay out the stack-frame (i.e. create a frame-map) for funobj
 and all its local functions. This must be done breadth-first, because
@@ -826,7 +826,7 @@ a (lexical-extent) sub-function might care about its parent frame-map."
 
 (defun complete-funobj (funobj)
   (case (funobj-entry-protocol funobj)
-    (:1req1opt 
+    (:1req1opt
      (complete-funobj-1req1opt funobj))
     (t (complete-funobj-default funobj)))
   (loop for (sub-function-binding) on (sub-function-binding-usage funobj) by #'cddr
@@ -909,7 +909,7 @@ a (lexical-extent) sub-function might care about its parent frame-map."
 			       (etypecase req-location
 				 (integer
 				  `((:movl (:ebp ,(stack-frame-offset location)) :edx)
-				    (:movl :edi (:ebp ,(stack-frame-offset lended-cons-position))) ; cdr 
+				    (:movl :edi (:ebp ,(stack-frame-offset lended-cons-position))) ; cdr
 				    (:movl :edx (:ebp ,(stack-frame-offset (1+ lended-cons-position)))) ; car
 				    (:leal (:ebp 1 ,(stack-frame-offset (1+ lended-cons-position)))
 					   :edx)
@@ -973,7 +973,7 @@ a (lexical-extent) sub-function might care about its parent frame-map."
 	  (code2 (cdr (assoc 2 code-specs)))
 	  (code3 (cdr (assoc 3 code-specs)))
 	  (codet (cdr (assoc 'muerte.cl::t code-specs))))
-      (assert codet () "A default numargs-case is required.") 
+      (assert codet () "A default numargs-case is required.")
       ;; (format t "codet:~{~&~A~}" codet)
       (let ((combined-code
 	     (delete 'start-stack-frame-setup
@@ -1034,7 +1034,7 @@ a (lexical-extent) sub-function might care about its parent frame-map."
 								     (loop for bad-pc in locate-inconsistencies
 									when (<= pc bad-pc (+ pc size))
 									return '(#x90)))))))
-			     
+
 	  (break "locate-inconsistencies: ~S" locate-inconsistencies)))
       (setf (movitz-funobj-symtab funobj) code-symtab)
       (let ((code-vector (make-array code-length
@@ -1585,7 +1585,7 @@ There is (propably) a bug in the peephole optimizer." recursive-count))
 	 (optimize-trim-stack-frame (unoptimized-code)
 	   "Any unused local variables on the stack-frame?"
 	   unoptimized-code
-	   ;; BUILD A MAP OF USED STACK-VARS AND REMAP THEM!	 
+	   ;; BUILD A MAP OF USED STACK-VARS AND REMAP THEM!
 	   #+ignore (if (not (and stack-frame-size
 				  (find 'start-stack-frame-setup unoptimized-code)))
 			unoptimized-code
@@ -1959,20 +1959,20 @@ falling below the label."
 		       (explain nil "Removed redundant store before ~A: ~A"
 				i2 (subseq pc 0 3)))
 		      #+ignore
-		      ((let ((stack-pos (store-stack-frame-p i))) 
+		      ((let ((stack-pos (store-stack-frame-p i)))
 			 (and stack-pos
 			      (loop with search-pc = (cdr pc)
 				  while search-pc
 				  repeat 10
 				  for ii = (pop search-pc)
-				  thereis (eql stack-pos 
+				  thereis (eql stack-pos
 					       (store-stack-frame-p ii))
 				  while (or (global-funcall-p ii)
 					    (and (simple-instruction-p ii)
 						 (not (eql stack-pos
 							   (uses-stack-frame-p ii))))))
 			      #+ignore
-			      (eql stack-pos 
+			      (eql stack-pos
 				   (store-stack-frame-p i4))
 			      #+ignore
 			      (every (lambda (ii)
@@ -2182,7 +2182,7 @@ falling below the label."
 	(if code-modified-p
 	    (apply #'optimize-code-internal optimized-code (1+ recursive-count) key-args)
             (optimize-trim-stack-frame (remove-frame-maps unoptimized-code)))))))
-;;;; Compiler internals  
+;;;; Compiler internals
 
 (defclass binding ()
   ((name
@@ -2477,7 +2477,7 @@ of argument <argnum>."
 ;;;   (location
 ;;;    ;; Stack-frame offset (in words) this object is allocated to.
 ;;;    :accessor location)))
-  
+
 
 ;;;
 
@@ -2489,7 +2489,7 @@ of argument <argnum>."
     instruction))
 
 (defun instruction-sub-program (instruction)
-  "When an instruction contains a sub-program, return that program, and 
+  "When an instruction contains a sub-program, return that program, and
 the sub-program options (&optional label) as secondary value."
   (let ((instruction (ignore-instruction-prefixes instruction)))
     (and (consp instruction)
@@ -2518,7 +2518,7 @@ the sub-program options (&optional label) as secondary value."
       (member instruction
 	      '((:int 100))
 	      :test #'equalp)))
-  
+
 #+ignore (defun sub-environment-p (env1 env2)
 	   (cond
 	    ((eq env1 env2) t)
@@ -2890,7 +2890,7 @@ the sub-program options (&optional label) as secondary value."
 					  (not (typep binding 'forwarding-binding))
 					  (not (typep binding 'keyword-function-argument))) ; XXX
 				 (take-note-of-binding init-with-register))))))
-			  (t (mapcar #'take-note-of-binding 
+			  (t (mapcar #'take-note-of-binding
 				     (find-read-bindings instruction))
 			     (mapcar #'record-binding-used ; This is just concerning "unused variable"
 				     (find-used-bindings instruction)) ; warnings!
@@ -3090,7 +3090,7 @@ the sub-program options (&optional label) as secondary value."
 	  do (when (and (typep binding 'forwarding-binding)
 			(plusp (car (gethash binding var-counts '(0)))))
 	       (setf (new-binding-location binding frame-map)
-		 (forwarding-binding-target binding))))	     
+		 (forwarding-binding-target binding))))
       ;; Keyword bindings
       (flet ((set-exclusive-location (binding location)
 	       (assert (not (rassoc location frame-map))
@@ -3377,7 +3377,7 @@ loading borrowed bindings."
     ;; (warn  "loading to ecx: ~S" binding)
     (unless (or (null (binding-store-type binding))
 		(movitz-subtypep (apply #'encoded-type-decode
-					(binding-store-type binding)) 
+					(binding-store-type binding))
 				 'integer))
       (warn "ecx from ~S" binding)))
   (when (movitz-env-get (binding-name binding) 'ignore nil (binding-env binding))
@@ -3523,7 +3523,7 @@ loading borrowed bindings."
 	       (binding-location (new-binding-location binding frame-map)))
 	   #+ignore (warn "~S type: ~S ~:[~;lended~]"
 			  binding
-			  binding-type 
+			  binding-type
 			  (binding-lended-p binding))
 	   (cond
 	    ((and (binding-lended-p binding)
@@ -3782,7 +3782,7 @@ loading borrowed bindings."
 			    (let ((immediate (movitz-bignum-value value)))
 			      (check-type immediate (unsigned-byte 32))
 			      (make-immediate-move immediate :ecx)))
-			   )))))	       
+			   )))))
 		   (t (error "Generalized lexb source for store-lexical not implemented: ~S" source))))))))))
 
 (defun finalize-code (code funobj frame-map)
@@ -3811,7 +3811,7 @@ loading borrowed bindings."
 	       (warn "lending: ~W: ~S"
 		     lended-binding
 		     (mapcar #'movitz-funobj-extent
-			     (mapcar #'binding-funobj 
+			     (mapcar #'binding-funobj
 				     (getf (binding-lending lended-binding) :lended-to))))
 	       (when (typep lended-binding 'funobj-binding)
 		 (break "Lending ~S from ~S: ~S" lended-binding funobj (binding-lending lended-binding)))
@@ -3849,7 +3849,7 @@ loading borrowed bindings."
       (loop for instruction in code
 	  appending
 	    (cond
-	     ((atom instruction) 
+	     ((atom instruction)
 	      (list instruction))
 	     ((and (= 2 (length instruction))
 		   (let ((operand (second instruction)))
@@ -3862,7 +3862,7 @@ loading borrowed bindings."
 	      (list (list (first instruction)
 			  (list 'quote (finalize-code (second (second instruction))
 						      funobj frame-map)))))
-	   
+
 	     (t ;; (warn "finalizing ~S" instruction)
 	      (case (first instruction)
 		((:locally :globally)
@@ -3889,7 +3889,7 @@ loading borrowed bindings."
 		   (warn "local-function-init: init ~S at ~S"
 			 function-binding
 			 (new-binding-location function-binding frame-map))
-		   (finalize-code 
+		   (finalize-code
 		    (let* ((sub-funobj (function-binding-funobj function-binding)))
 		      (cond
 		       ((eq (movitz-funobj-extent sub-funobj) :unused)
@@ -3924,7 +3924,7 @@ loading borrowed bindings."
 				  "Binding ~S with ~S borrows no nothing, which makes no sense." function-binding sub-funobj)
 			  (append (make-load-constant sub-funobj :eax funobj frame-map)
 				  `((:movl (:edi ,(global-constant-offset 'copy-funobj)) :esi)
-				    (:call (:esi ,(bt:slot-offset 'movitz-funobj 'code-vector%1op)))
+				    (:call (:esi ,(slot-offset 'movitz-funobj 'code-vector%1op)))
 				    (:movl :eax :edx))
 				  (make-store-lexical function-binding :eax nil funobj frame-map)
 				  (loop for bb in (borrowed-bindings sub-funobj)
@@ -3957,7 +3957,7 @@ loading borrowed bindings."
 				  `((:movl :edx ,register)))))
 		       (t (append (make-load-constant sub-funobj :eax funobj frame-map)
 				  `((:movl (:edi ,(global-constant-offset 'copy-funobj)) :esi)
-				    (:call (:esi ,(bt:slot-offset 'movitz-funobj 'code-vector%1op)))
+				    (:call (:esi ,(slot-offset 'movitz-funobj 'code-vector%1op)))
 				    (:movl :eax :edx))
 				  lend-code
 				  `((:movl :edx ,register))))))
@@ -4234,7 +4234,7 @@ as the lexical variable-name, and add a new shadowing dynamic binding for <forma
 		    formal))))
 	#+ignore
 	(multiple-value-bind (key-decode-map key-decode-shift)
-	    (best-key-encode (key-vars env))  
+	    (best-key-encode (key-vars env))
 	  (setf (key-decode-map env) key-decode-map
 		(key-decode-shift env) key-decode-shift))
 	#+ignore
@@ -4539,7 +4539,7 @@ as the lexical variable-name, and add a new shadowing dynamic binding for <forma
 			`((:movl (:ebp ,(stack-frame-offset location))
 				 :edx)
 			  (:movl :edi
-				 (:ebp ,(stack-frame-offset lended-cons-position))) ; cdr 
+				 (:ebp ,(stack-frame-offset lended-cons-position))) ; cdr
 			  (:movl :edx
 				 (:ebp ,(stack-frame-offset (1+ lended-cons-position)))) ; car
 			  (:leal (:ebp 1 ,(stack-frame-offset (1+ lended-cons-position)))
@@ -4615,9 +4615,9 @@ Return arg-init-code, need-normalized-ecx-p."
 					    (function-argument-argnum binding))))
 	  as supplied-p-var = (optional-function-argument-supplied-p-var binding)
 	  as supplied-p-binding = (movitz-binding supplied-p-var env)
-	  as not-present-label = (make-symbol (format nil "optional-~D-not-present" 
+	  as not-present-label = (make-symbol (format nil "optional-~D-not-present"
 						      (function-argument-argnum binding)))
-	  and optional-ok-label = (make-symbol (format nil "optional-~D-ok" 
+	  and optional-ok-label = (make-symbol (format nil "optional-~D-ok"
 						       (function-argument-argnum binding)))
 	  unless (movitz-env-get optional-var 'ignore nil env nil) ; XXX
 	  append
@@ -4892,7 +4892,7 @@ Return arg-init-code, need-normalized-ecx-p."
 				best-shift shift
 				best-crashes crashes)))
 		    (key-encoding-failed ())))
-	finally 
+	finally
 	  (unless best-encoding
 	    (warn "Key-encoding failed for ~S: ~S."
 		   vars
@@ -4927,7 +4927,7 @@ Return arg-init-code, need-normalized-ecx-p."
 	      (mapcar (lambda (s)
 			(movitz-sxhash (movitz-read s)))
 		      vars))))))
-	 
+
 
 (defun make-special-funarg-shadowing (env function-body)
   "Wrap function-body in a let, if we need to.
@@ -5026,7 +5026,7 @@ or when there's a non-dynamic-extent &rest binding."
 	 (member returns-provided '(:multiple-values :function)))
 	(:boolean
 	 (member returns-provided +boolean-modes+)))))
-  
+
 (defun make-result-and-returns-glue (desired-result returns-provided
 				     &optional code
 				     &key (type t) provider really-desired)
@@ -5453,7 +5453,7 @@ the first one takes preference. Note that :non-local-exit might also be returned
      (t (compiler-call #'compile-form
 	  :result-mode :eax
 	  :forward form-info)))))
-  
+
 (define-compiler compile-form-unprotected (&all downstream &form form &result-mode result-mode
 						&extent extent)
   "3.1.2.1 Form Evaluation. May not honor RESULT-MODE.
@@ -5645,7 +5645,7 @@ preceding code). As secondary value, returns the new :returns value."
 			    (make-compiled-funcall-by-esi (length arg-forms))
 			  (make-compiled-funcall-by-symbol operator (length arg-forms) funobj))
 			stack-restore-code))))))
-	  
+
 (define-compiler compile-apply-lexical-funobj (&all all &form form &funobj funobj &env env
 						    &result-mode result-mode)
   "3.1.2.1.2.3 Function Forms"
@@ -5675,7 +5675,7 @@ preceding code). As secondary value, returns the new :returns value."
 		 (make-immediate-move (dpb num-args (byte 24 8) #x80) :ecx))
 					; call new ESI's code-vector
 	       `((:call (:esi ,(slot-offset 'movitz-funobj 'code-vector))))))))
-  
+
 (defun make-compiled-funcall-by-symbol (apply-symbol num-args funobj)
   (declare (ignore funobj))
   (check-type apply-symbol symbol)
@@ -6063,7 +6063,7 @@ fifth:  all compiler-values for form1, as a list."
 	  :producer (default-compiler-values-producer)
 	  :type  `(eql ,movitz-obj)
 	  :final-form binding
-	  :functional-p t)	
+	  :functional-p t)
       (case  (operator result-mode)
 	(:ignore
 	 (compiler-values (self-eval)
@@ -6119,7 +6119,7 @@ fifth:  all compiler-values for form1, as a list."
       (etypecase movitz-obj
 	(movitz-null :edi)
 	(movitz-immediate-object (movitz-immediate-value movitz-obj))
-	(movitz-heap-object 
+	(movitz-heap-object
 	 (make-indirect-reference :esi (movitz-funobj-intern-constant funobj movitz-obj)))))))
 
 (defun make-compiled-lexical-control-transfer (return-code return-mode from-env to-env
@@ -6234,7 +6234,7 @@ in ECX the number of values (as fixnum)."
 of <inner-env> since <outer-env>,
 the number of intervening dynamic-slots (special bindings, unwind-protects, and catch-tags),
 and a list of any intervening unwind-protect environment-slots."
-  (labels 
+  (labels
       ((find-stack-delta (env stack-distance num-dynamic-slots unwind-protects)
 	 #+ignore (warn "find-stack-delta: ~S dist ~S, slots ~S" env
 			(stack-used env) (num-dynamic-slots env))
@@ -6615,11 +6615,11 @@ and a list of any intervening unwind-protect environment-slots."
     (check-type dst (member :eax :ebx :ecx :edx))
     (multiple-value-bind (op-offset fast-op fast-op-ebx cl-op)
 	(ecase op
-	  (:car (values (bt:slot-offset 'movitz-cons 'car)
+	  (:car (values (slot-offset 'movitz-cons 'car)
 			'fast-car
 			'fast-car-ebx
 			'movitz-car))
-	  (:cdr (values (bt:slot-offset 'movitz-cons 'cdr)
+	  (:cdr (values (slot-offset 'movitz-cons 'cdr)
 			'fast-cdr
 			'fast-cdr-ebx
 			'movitz-cdr)))
@@ -6634,7 +6634,7 @@ and a list of any intervening unwind-protect environment-slots."
 		(append (make-load-constant x dst funobj frame-map)
 			`((:movl (,dst ,op-offset) ,dst))))
 	       (t `(,@(make-load-lexical binding :eax funobj nil frame-map)
-		      (,*compiler-global-segment-prefix* 
+		      (,*compiler-global-segment-prefix*
 		       :call (:edi ,(global-constant-offset fast-op)))
 		      ,@(when (not (eq dst :eax))
 			  `((:movl :eax ,dst))))))))
@@ -6659,7 +6659,7 @@ and a list of any intervening unwind-protect environment-slots."
 		   ,@(when (not (eq dst :eax))
 		       `((:movl :eax ,dst)))))
 		(t `(,@(make-load-lexical binding :eax funobj nil frame-map)
-		       (,*compiler-global-segment-prefix* 
+		       (,*compiler-global-segment-prefix*
 			:call (:edi ,(global-constant-offset fast-op)))
 		       ,@(when (not (eq dst :eax))
 			   `((:movl :eax ,dst)))))))
@@ -6727,7 +6727,7 @@ and a list of any intervening unwind-protect environment-slots."
 				     (:int 61)))))
 			 `((:cmpl :edi ,tmp-register))
 			 (make-result-and-returns-glue result-mode :boolean-zf=1)))))))))))
-	  
+
 
 ;;;;;;;;;;;;;;;;;; incf-lexvar
 
@@ -6763,7 +6763,7 @@ and a list of any intervening unwind-protect environment-slots."
 	  (:into)))
        ((binding-store-subtypep binding 'integer)
 	(let ((register (chose-free-register protect-registers)))
-	  `(,@(make-load-lexical (ensure-local-binding binding funobj) 
+	  `(,@(make-load-lexical (ensure-local-binding binding funobj)
 				 register funobj nil frame-map
 				 :protect-registers protect-registers)
 	      (:addl ,(* delta +movitz-fixnum-factor+) :eax)
@@ -7329,7 +7329,7 @@ but it's requested to be in ~S."
 			(:je ',eql-done)
 			(,*compiler-global-segment-prefix*
 			 :movl (:edi ,(global-constant-offset 'complicated-eql)) :esi)
-			(:call (:esi ,(bt:slot-offset 'movitz-funobj 'code-vector%2op)))
+			(:call (:esi ,(slot-offset 'movitz-funobj 'code-vector%2op)))
 			(:jne ',on-false-label)
 			,eql-done))))
 	   ((eq :boolean-branch-on-true (operator return-mode))
@@ -7339,7 +7339,7 @@ but it's requested to be in ~S."
 			(:je ',on-true-label)
 			(,*compiler-global-segment-prefix*
 			 :movl (:edi ,(global-constant-offset 'complicated-eql)) :esi)
-			(:call (:esi ,(bt:slot-offset 'movitz-funobj 'code-vector%2op)))
+			(:call (:esi ,(slot-offset 'movitz-funobj 'code-vector%2op)))
 			(:je ',on-true-label)))))
 	   ((eq return-mode :boolean-zf=1)
 	    (append (make-load-eax-ebx)
@@ -7348,7 +7348,7 @@ but it's requested to be in ~S."
 			(:je ',eql-done)
 			(,*compiler-global-segment-prefix*
 			 :movl (:edi ,(global-constant-offset 'complicated-eql)) :esi)
-			(:call (:esi ,(bt:slot-offset 'movitz-funobj 'code-vector%2op)))
+			(:call (:esi ,(slot-offset 'movitz-funobj 'code-vector%2op)))
 			,eql-done))))
 	   (t (error "unknown eql: ~S" instruction))))))))
 
@@ -7395,12 +7395,12 @@ but it's requested to be in ~S."
 			       `((:pushl (:eax ,(slot-offset 'movitz-funobj 'num-jumpers)))
 				 (:pushl (:eax ,(slot-offset 'movitz-funobj 'name)))
 				 (:pushl (:eax ,(slot-offset 'movitz-funobj 'lambda-list)))
-				 
+
 				 (:pushl 0) ; %3op
 				 (:pushl 0) ; %2op
 				 (:pushl 0) ; %1op
 				 (:pushl 2) ; (default) 2 is recognized by map-header-vals as non-initialized funobj.
-				 
+
 				 (:pushl (:eax ,(slot-offset 'movitz-funobj 'type)))
 				 (:leal (:esp ,(tag :other)) :ebx)
 				 (,*compiler-local-segment-prefix*
@@ -7432,4 +7432,3 @@ but it's requested to be in ~S."
 	      (:movl :ebx (:edx ,(+ 4 (dynamic-extent-object-offset dynamic-scope proto-cons))))
 	      (:leal (:edx ,(+ (tag :cons) (dynamic-extent-object-offset dynamic-scope proto-cons)))
 		     :eax)))))
-
