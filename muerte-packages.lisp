@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Fri Feb 13 19:25:41 2004
 ;;;;                
-;;;; $Id: muerte-packages.lisp,v 1.1 2004-02-13 22:10:34 ffjeld Exp $
+;;;; $Id: muerte-packages.lisp,v 1.1 2004/02/13 22:10:34 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

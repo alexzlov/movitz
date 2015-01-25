@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Sun Aug 14 20:18:52 2005
 ;;;;                
-;;;; $Id: pci-device.lisp,v 1.1 2006-01-10 11:04:38 ffjeld Exp $
+;;;; $Id: pci-device.lisp,v 1.1 2006/01/10 11:04:38 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

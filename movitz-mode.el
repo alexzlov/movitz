@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Thu Sep 27 18:12:17 2001
 ;;;;                
-;;;; $Id: movitz-mode.el,v 1.10 2005-08-21 12:11:51 ffjeld Exp $
+;;;; $Id: movitz-mode.el,v 1.10 2005/08/21 12:11:51 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

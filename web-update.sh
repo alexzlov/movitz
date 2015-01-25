@@ -10,7 +10,7 @@
 ## Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ## Created at:    Mon Nov 10 11:54:33 2003
 ##                
-## $Id: web-update.sh,v 1.1 2004-04-18 12:32:56 ffjeld Exp $
+## $Id: web-update.sh,v 1.1 2004/04/18 12:32:56 ffjeld Exp $
 ##                
 ######################################################################
 

@@ -1,17 +1,17 @@
 ;;;;------------------------------------------------------------------
-;;;;
-;;;;    Copyright (C) 2001-2005,
+;;;; 
+;;;;    Copyright (C) 2001-2005, 
 ;;;;    Department of Computer Science, University of Tromso, Norway.
-;;;;
+;;;; 
 ;;;;    For distribution policy, see the accompanying file COPYING.
-;;;;
+;;;; 
 ;;;; Filename:      basic-functions.lisp
-;;;; Description:
+;;;; Description:   
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Tue Sep  4 18:41:57 2001
-;;;;
+;;;;                
 ;;;; $Id: basic-functions.lisp,v 1.28 2009-07-19 18:32:34 ffjeld Exp $
-;;;;
+;;;;                
 ;;;;------------------------------------------------------------------
 
 (require :muerte/basic-macros)
@@ -46,7 +46,7 @@
     ;; Search failed, ECX=0
    search-done
     (:movl :ecx :eax)))
-
+    
 
 (defun d-bind-veryfy-keys (args keys)
   (do ((allow-allow-p t)
@@ -201,7 +201,7 @@ from regular function-calls."
 	  (:leal (:eax -7) :ecx)
 	  (:andb 7 :cl)
 	  (:jne 'not-symbol)
-	  (:movl (:eax #.(movitz::slot-offset 'movitz::movitz-symbol 'movitz::function-value))
+	  (:movl (:eax #.(binary-types:slot-offset 'movitz::movitz-symbol 'movitz::function-value))
 		 :esi)
 	  (:jmp 'esi-ok)
 	 not-symbol
@@ -210,7 +210,7 @@ from regular function-calls."
 		  (:compile-form (:result-mode :ignore)
 		   (error "Can't apply non-function ~W." function))))
 	  (:cmpb #.(movitz::tag :funobj)
-		 (:eax #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::type)))
+		 (:eax #.(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::type)))
 	  (:jne 'not-a-funobj)
 	  (:movl :eax :esi)
 	 esi-ok
@@ -221,7 +221,7 @@ from regular function-calls."
 	 zero-args
 	  (:xorl :ecx :ecx)
 	  (:compile-form (:result-mode :edx) function)
-	  (:call (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector)))
+	  (:call (:esi #.(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::code-vector)))
 	  (:jmp 'apply-done)
 	 more-than-zero-args
 	  (:movl (:ebx -1) :eax)
@@ -232,7 +232,7 @@ from regular function-calls."
 	  (:jz 'more-than-one-args)
 	 one-args
 	  (:compile-form (:result-mode :edx) function)
-	  (:call (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector%1op)))
+	  (:call (:esi #.(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::code-vector%1op)))
 	  (:jmp 'apply-done)
 	 more-than-one-args
 	  (:movl (:ebx -1) :edx)
@@ -244,7 +244,7 @@ from regular function-calls."
 	  (:jz 'more-than-two-args)
 	 two-args
 	  (:compile-form (:result-mode :edx) function)
-	  (:call (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector%2op)))
+	  (:call (:esi #.(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::code-vector%2op)))
 	  (:jmp 'apply-done)
 	 more-than-two-args
 	  (:pushl (:edx -1))
@@ -255,7 +255,7 @@ from regular function-calls."
 	  (:jz 'more-than-three-args)
 	 three-args
 	  (:compile-form (:result-mode :edx) function)
-	  (:call (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector%3op)))
+	  (:call (:esi #.(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::code-vector%3op)))
 	  (:jmp 'apply-done)
 	 more-than-three-args
 	  (:pushl (:edx -1))
@@ -276,7 +276,7 @@ from regular function-calls."
 	  (:movb #xff :cl)
 	 ecx-ok
 	  (:compile-form (:result-mode :edx) function)
-	  (:call (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector)))
+	  (:call (:esi #.(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::code-vector)))
 	 apply-done
 	  ;; Don't need to restore ESP because we'll be exiting this stack-frame
 	  ;; now anyway.
@@ -371,7 +371,7 @@ from regular function-calls."
   `(with-inline-assembly (:returns :register :type fixnum)
      (:compile-form (:result-mode :register) ,object)
      (:andl ,(* -2 movitz::+movitz-fixnum-factor+) (:result-register))))
-
+  
 (defun object-location (object)
   "The location is the object's address divided by fixnum-factor."
   (object-location object))
@@ -408,7 +408,7 @@ interpreted as a lispval, and consequently a fixnum."
 	 (:addl ,(movitz:movitz-eval offset env) :eax))
     `(with-inline-assembly (:returns :eax)
        (:compile-two-forms (:eax :ecx) ,word ,offset)
-       (:sarl ,movitz::+movitz-fixnum-s765rewer78hift+ :ecx)
+       (:sarl ,movitz::+movitz-fixnum-shift+ :ecx)
        (:addl :ecx :eax))))
 
 (defun %word-offset (word offset)
@@ -439,7 +439,7 @@ interpreted as a lispval, and consequently a fixnum."
 
 (defun (setf memrange) (value object offset index length type)
   (let* ((index (check-the index index))
-	 (end (check-the index (+ index length))))
+	 (end (check-the index (+ index length))))	
     (ecase type
       (:unsigned-byte8
        (etypecase value

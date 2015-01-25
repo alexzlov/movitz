@@ -7,23 +7,13 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Distribution:  See the accompanying file COPYING.
 ;;;;                
-;;;; $Id: scratch.lisp,v 1.4 2008-03-07 23:38:16 ffjeld Exp $
+;;;; $Id: scratch.lisp,v 1.3 2008/02/23 22:28:55 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 
 (provide :scratch)
 
 (in-package los0)
-
-(defun test-bq (x y)
-  `(+ ,x ,y))
-
-
-#+ignore
-(defun d-bind (x)
-  (destructuring-bind (a (b &optional c) d &rest e &key f)
-      x
-    (values a b c d e f)))
 
 #+ignore
 (defun set.2 ()
@@ -888,7 +878,7 @@ Can be used to measure the overhead of primitive function."
   (with-inline-assembly (:returns :eax)
     (:load-lexical (:lexical-binding x) :eax)
     (:% :bytes 8 #xff #x97)		; (:call-local-pf ret-trampoline)
-    (:% :bytes 32 #.(movitz::slot-offset 'movitz::movitz-run-time-context 'movitz::ret-trampoline))))
+    (:% :bytes 32 #.(binary-types:slot-offset 'movitz::movitz-run-time-context 'movitz::ret-trampoline))))
 
 (defun my-test-labels (x)
   (labels (#+ignore (p () (print x))

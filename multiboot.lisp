@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Wed Jun 12 12:14:12 2002
 ;;;;                
-;;;; $Id: multiboot.lisp,v 1.5 2004-07-28 14:23:37 ffjeld Exp $
+;;;; $Id: multiboot.lisp,v 1.5 2004/07/28 14:23:37 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

@@ -1,16 +1,16 @@
 ;;;;------------------------------------------------------------------
-;;;;
+;;;; 
 ;;;;    Copyright (C) 20012000, 2002-2004,
 ;;;;    Department of Computer Science, University of Tromso, Norway
-;;;;
+;;;; 
 ;;;; Filename:      movitz.lisp
-;;;; Description:
+;;;; Description:   
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Mon Oct  9 20:52:58 2000
 ;;;; Distribution:  See the accompanying file COPYING.
-;;;;
-;;;; $Id: movitz.lisp,v 1.12 2007-03-13 20:40:10 ffjeld Exp $
-;;;;
+;;;;                
+;;;; $Id: movitz.lisp,v 1.12 2007/03/13 20:40:10 ffjeld Exp $
+;;;;                
 ;;;;------------------------------------------------------------------
 
 (in-package movitz)
@@ -34,8 +34,8 @@
 (defvar +movitz-multiple-values-limit+ 63)
 
 (defvar *bq-level* 0)
-(defvar *default-image-init-file* #p"losp/los0.lisp")
-(defvar *default-image-file* #p"los0-image")
+(defvar *default-image-init-file* (asdf:system-relative-pathname :movitz #P"losp/los0.lisp"))
+(defvar *default-image-file* (asdf:system-relative-pathname :movitz  #P"los0-image"))
 
 (defvar *movitz-host-features* *features*
   "The *features* of the host implementation.")

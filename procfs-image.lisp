@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Fri Aug 24 11:39:37 2001
 ;;;;                
-;;;; $Id: procfs-image.lisp,v 1.26 2006-05-15 19:49:23 ffjeld Exp $
+;;;; $Id: procfs-image.lisp,v 1.26 2006/05/15 19:49:23 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 
@@ -68,7 +68,7 @@
 				  (procfs-var (gensym))
 				  (image-var '*image*))
 			    &body body)
-  `(let ((bt:*endian* :little-endian)
+  `(let ((binary-types:*endian* :little-endian)
 	 (pid (bochs-parameter :pid ,path)))
      (procfs:with-procfs-attached (,procfs-var pid :direction :io)
        (let ((,image-var (make-instance 'bochs-image

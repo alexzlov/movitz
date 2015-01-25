@@ -9,7 +9,7 @@
 ;;;; Created at:    Mon Oct  9 20:47:19 2000
 ;;;; Distribution:  See the accompanying file COPYING.
 ;;;;                
-;;;; $Id: bootblock.lisp,v 1.16 2008-03-03 22:40:55 ffjeld Exp $
+;;;; $Id: bootblock.lisp,v 1.16 2008/03/03 22:40:55 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

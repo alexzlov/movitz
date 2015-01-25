@@ -1,16 +1,16 @@
 ;;;;------------------------------------------------------------------
-;;;;
+;;;; 
 ;;;;    Copyright (C) 2000-2005,
 ;;;;    Department of Computer Science, University of Tromso, Norway
-;;;;
+;;;; 
 ;;;; Filename:      typep.lisp
 ;;;; Description:   Implements TYPEP and TYPECASE.
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Fri Dec  8 11:07:53 2000
 ;;;; Distribution:  See the accompanying file COPYING.
-;;;;
+;;;;                
 ;;;; $Id: typep.lisp,v 1.60 2008-04-27 19:45:43 ffjeld Exp $
-;;;;
+;;;;                
 ;;;;------------------------------------------------------------------
 
 (require :muerte/basic-macros)
@@ -96,9 +96,9 @@
 		  ,cmp
 		 other-typep-failed))))
 	 (make-basic-vector-typep (element-type)
-	   (assert (= 1 (- (movitz::slot-offset 'movitz::movitz-basic-vector 'movitz::element-type)
-			   (movitz::slot-offset 'movitz::movitz-basic-vector 'movitz::type))))
-	   (let ((type-code (dpb (enum-value 'movitz::movitz-vector-element-type element-type)
+	   (assert (= 1 (- (binary-types:slot-offset 'movitz::movitz-basic-vector 'movitz::element-type)
+			   (binary-types:slot-offset 'movitz::movitz-basic-vector 'movitz::type))))
+	   (let ((type-code (dpb (binary-types:enum-value 'movitz::movitz-vector-element-type element-type)
 				 (byte 8 8)
 				 (movitz:tag :basic-vector))))
 	     `(with-inline-assembly-case ()
@@ -125,16 +125,16 @@
 		  (:cmpw ,type-code (:eax ,movitz:+other-type-offset+))
 		 vector-typep-failed))))
 	 (make-vector-typep (element-type)
-	   (assert (= 1 (- (movitz::slot-offset 'movitz::movitz-basic-vector 'movitz::element-type)
-			   (movitz::slot-offset 'movitz::movitz-basic-vector 'movitz::type))))
+	   (assert (= 1 (- (binary-types:slot-offset 'movitz::movitz-basic-vector 'movitz::element-type)
+			   (binary-types:slot-offset 'movitz::movitz-basic-vector 'movitz::type))))
 	   (let ((basic-type-code
-		  (dpb (enum-value 'movitz::movitz-vector-element-type element-type)
+		  (dpb (binary-types:enum-value 'movitz::movitz-vector-element-type element-type)
 		       (byte 8 8)
 		       (movitz:tag :basic-vector)))
 		 (indirect-type-code
 		  (logior (ash (movitz:tag :basic-vector) 0)
-			  (ash (enum-value 'movitz::movitz-vector-element-type :indirects) 8)
-			  (ash (enum-value 'movitz::movitz-vector-element-type element-type) 24))))
+			  (ash (binary-types:enum-value 'movitz::movitz-vector-element-type :indirects) 8)
+			  (ash (binary-types:enum-value 'movitz::movitz-vector-element-type element-type) 24))))
 	     `(with-inline-assembly-case ()
 		(do-case (:boolean-branch-on-false :same :labels (vector-typep-no-branch))
 		  (:compile-form (:result-mode :eax) ,object)
@@ -169,9 +169,9 @@
 		  (:cmpl ,indirect-type-code :ecx)
 		 vector-typep-done))))
 	 (make-function-typep (funobj-type)
-	   (assert (= 1 (- (movitz::slot-offset 'movitz::movitz-funobj 'movitz::funobj-type)
-			   (movitz::slot-offset 'movitz::movitz-funobj 'movitz::type))))
-	   (let ((type-code (dpb (enum-value 'movitz::movitz-funobj-type funobj-type)
+	   (assert (= 1 (- (binary-types:slot-offset 'movitz::movitz-funobj 'movitz::funobj-type)
+			   (binary-types:slot-offset 'movitz::movitz-funobj 'movitz::type))))
+	   (let ((type-code (dpb (binary-types:enum-value 'movitz::movitz-funobj-type funobj-type)
 				 (byte 8 8)
 				 (movitz:tag :funobj))))
 	     `(with-inline-assembly-case ()
@@ -181,7 +181,7 @@
 		  (:testb 7 :cl)
 		  (:branch-when :boolean-zf=0)
 		  (:cmpw ,type-code
-			 (:eax ,(movitz::slot-offset 'movitz::movitz-funobj 'movitz::type)))
+			 (:eax ,(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::type)))
 		  (:branch-when :boolean-zf=0))
 		(do-case (:boolean-branch-on-true :same :labels (function-typep-failed))
 		  (:compile-form (:result-mode :eax) ,object)
@@ -189,7 +189,7 @@
 		  (:testb 7 :cl)
 		  (:jne 'function-typep-failed)
 		  (:cmpw ,type-code
-			 (:eax ,(movitz::slot-offset 'movitz::movitz-funobj 'movitz::type)))
+			 (:eax ,(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::type)))
 		  (:branch-when :boolean-zf=1)
 		 function-typep-failed)
 		(do-case (t :boolean-zf=1 :labels (function-typep-failed))
@@ -198,7 +198,7 @@
 		  (:testb 7 :cl)
 		  (:jne 'function-typep-failed)
 		  (:cmpw ,type-code
-			 (:eax ,(movitz::slot-offset 'movitz::movitz-funobj 'movitz::type)))
+			 (:eax ,(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::type)))
 		 function-typep-failed)))))
     (if (not (movitz:movitz-constantp type-specifier env))
 	form
@@ -262,7 +262,7 @@
 		      (:leal (:eax 6) :ecx) ; => cons:7, other:4, symbol:5, fixnum:6
 		      (:testb #b100 :cl)
 		     done)))
-		(std-instance
+		(std-instance 
 		 (make-other-typep :std-instance)
 		 #+ignore (make-tag-typep :std-instance))
 		(macro-function
@@ -605,7 +605,7 @@
   (typep x 'bit-vector))
 
 (defun arrayp (x)
-  (typep x 'array))
+  (typep x 'array))      
 
 (define-simple-typep (atom atom) (x)
   (typep x 'atom))
@@ -746,3 +746,4 @@
 	   (c object (expand-type result-type) actual-type))
 	  (t (error "Don't know how to coerce ~S to ~S." object actual-type)))))
     (c object result-type result-type)))
+

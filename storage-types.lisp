@@ -1,16 +1,16 @@
 ;;;;------------------------------------------------------------------
-;;;;
+;;;; 
 ;;;;    Copyright (C) 2000-2005,
 ;;;;    Department of Computer Science, University of Tromso, Norway
-;;;;
+;;;; 
 ;;;; Filename:      storage-types.lisp
 ;;;; Description:   Physical storage structures for Movitz objects.
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Sun Oct 22 00:22:43 2000
 ;;;; Distribution:  See the accompanying file COPYING.
-;;;;
+;;;;                
 ;;;; $Id: storage-types.lisp,v 1.65 2008-04-27 19:23:25 ffjeld Exp $
-;;;;
+;;;;                
 ;;;;------------------------------------------------------------------
 
 (in-package movitz)
@@ -89,7 +89,7 @@
 (defparameter +scan-skip-word+ #x00000003)
 
 (defun tag (type &optional (wide-tag 0))
-  (logior (enum-value 'other-type-byte type)
+  (logior (binary-types:enum-value 'other-type-byte type)
 	  (ash wide-tag 8)))
 
 (defun tag-name (number)
@@ -105,7 +105,7 @@
 (defun slot-map (type &optional (offset 0))
   (let ((slots (binary-record-slot-names type)))
     (loop for slot in slots
-	as o = (- (slot-offset type slot) offset)
+	as o = (- (binary-types:slot-offset type slot) offset)
 	collect (list (intern (symbol-name slot) :muerte)
 		      (intern (symbol-name (binary-slot-type type slot)) :muerte)
 		      (truncate o 4)
@@ -167,7 +167,7 @@
 (defmethod update-movitz-object ((obj movitz-immediate-object) lisp-obj)
   (declare (ignore lisp-obj))
   (values))
-
+  
 ;;; Fixnums
 
 (eval-when (:compile-toplevel :execute :load-toplevel)
@@ -245,7 +245,7 @@ integer (native lisp) value."
 	 :initarg byte)))
 
 (defun make-movitz-code (byte)
-  (make-instance 'movitz-code 'byte byte))
+  (make-instance 'movitz-code 'byte byte))    
 
 ;;; Conses
 
@@ -378,7 +378,7 @@ integer (native lisp) value."
 	     :stream stream))
     object)
    (t (call-next-method))))
-
+    
 (defun basic-vector-type-tag (element-type)
   (dpb (enum-value 'movitz-vector-element-type element-type)
        (byte 8 8)
@@ -428,7 +428,7 @@ integer (native lisp) value."
 	     (t (values (movitz-vector-symbolic-data obj)
 			(movitz-vector-element-type obj))))
 	 (etypecase data
-	   (list
+	   (list 
 	    (loop for datum in data
 	       sum (write-element type stream datum)))
 	   (vector
@@ -762,7 +762,7 @@ integer (native lisp) value."
    (symbolic-name
     :initarg :symbolic-name
     :accessor movitz-funobj-symbolic-name)
-   (symbolic-code
+   (symbolic-code 
     :initarg :symbolic-code
     :accessor movitz-funobj-symbolic-code)
    (symtab
@@ -776,7 +776,7 @@ integer (native lisp) value."
     :accessor function-envs)
    (funobj-env
     :initarg :funobj-env
-    :accessor funobj-env)
+    :accessor funobj-env)   
    (extent
     :initarg :extent
     :initform :unused
@@ -1113,7 +1113,7 @@ integer (native lisp) value."
 	    (third (movitz-struct-slot-values movitz-hash)) hash-sxhash
 	    (fourth (movitz-struct-slot-values movitz-hash)) hash-count)
       movitz-hash)))
-
+					     
 ;;;
 
 ;;;(unless (typep *movitz-nil* 'movitz-nil)
@@ -1341,3 +1341,4 @@ integer (native lisp) value."
   (print-unreadable-object (x stream :type t)
     (format stream "~D" (slot-value x 'value)))
   x)
+

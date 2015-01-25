@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Wed Oct  6 12:42:51 2004
 ;;;;                
-;;;; $Id: tftp.lisp,v 1.4 2004-12-08 23:40:15 ffjeld Exp $
+;;;; $Id: tftp.lisp,v 1.4 2004/12/08 23:40:15 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 

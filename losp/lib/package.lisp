@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Fri Sep 27 17:24:11 2002
 ;;;;                
-;;;; $Id: package.lisp,v 1.6 2004-11-24 14:20:55 ffjeld Exp $
+;;;; $Id: package.lisp,v 1.6 2004/11/24 14:20:55 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 
@@ -67,6 +67,26 @@
 ;;;	   #:*repl-print-format*
 ;;;	   #:*repl-readline-context*
 ;;;	   #:read-eval-print
+
+           ;; scheduling
+           *ticks-per-second*
+           *scheduler-function*
+           scheduler
+           process-run-function
+           process-wait
+           process-wait-with-timeout
+           process-enable
+           process-disable
+           process-enable-run-reason
+           process-disable-run-reason
+           process-enable-arrest-reason
+           process-disable-arrest-reason
+           clear-process-run-time
+           process-kill
+           process-block-with-timeout
+           process-block
+           process-unblock
+
 	   ))
 
 (provide :lib/package)

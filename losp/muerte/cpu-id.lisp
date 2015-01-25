@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Mon Apr 15 22:47:13 2002
 ;;;;                
-;;;; $Id: cpu-id.lisp,v 1.12 2005-06-09 22:20:22 ffjeld Exp $
+;;;; $Id: cpu-id.lisp,v 1.12 2005/06/09 22:20:22 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 
@@ -131,9 +131,9 @@ octets of EAX, EBX, EDX, and ECX, also in little-endian order."
 		(:movl (:esp #.(cl:* 4 (cl:- 16 2))) :ebx)
 		(:movb 16 :cl)
 		(:load-constant muerte.cl::values :edx)
-		(:movl (:edx #.(movitz::slot-offset 'movitz::movitz-symbol 'movitz::function-value))
+		(:movl (:edx #.(binary-types:slot-offset 'movitz::movitz-symbol 'movitz::function-value))
 		       :esi)		; load new funobj from symbol into ESI
-		(:call (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector)))))))
+		(:call (:esi #.(binary-types:slot-offset 'movitz::movitz-funobj 'movitz::code-vector)))))))
       (do-it))))
 
 

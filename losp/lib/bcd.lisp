@@ -10,7 +10,7 @@
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Mon Sep 30 14:03:57 2002
 ;;;;                
-;;;; $Id: bcd.lisp,v 1.3 2004-01-19 11:23:44 ffjeld Exp $
+;;;; $Id: bcd.lisp,v 1.3 2004/01/19 11:23:44 ffjeld Exp $
 ;;;;                
 ;;;;------------------------------------------------------------------
 
