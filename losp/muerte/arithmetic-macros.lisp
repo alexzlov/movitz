@@ -1,17 +1,17 @@
 ;;;;------------------------------------------------------------------
-;;;; 
-;;;;    Copyright (C) 2003-2005, 
+;;;;
+;;;;    Copyright (C) 2003-2005,
 ;;;;    Department of Computer Science, University of Tromso, Norway.
-;;;; 
+;;;;
 ;;;;    For distribution policy, see the accompanying file COPYING.
-;;;; 
+;;;;
 ;;;; Filename:      arithmetic-macros.lisp
 ;;;; Description:   Transformation of arithmethic operators.
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Sat Jul 17 13:42:46 2004
-;;;;                
+;;;;
 ;;;; $Id: arithmetic-macros.lisp,v 1.23 2008-04-27 19:26:14 ffjeld Exp $
-;;;;                
+;;;;
 ;;;;------------------------------------------------------------------
 
 (require :muerte/basic-macros)
@@ -156,10 +156,10 @@
 		  (:cmpl ,(* min movitz::+movitz-fixnum-factor+) :eax)
 		  (:sbbl :ecx :ecx)
 		  (:cmpl ,(* (1+ max) movitz::+movitz-fixnum-factor+) :eax)
-		  (:adcl 0 :ecx))))))))   
+		  (:adcl 0 :ecx))))))))
    (t `(let ((x ,x))
 	 (and (<= ,min x) (<= x ,max))))))
-       
+
 (define-compiler-macro below (&whole form x max &environment env)
   (if (movitz:movitz-constantp max env)
       `(with-inline-assembly (:returns :boolean-cf=1)
@@ -395,7 +395,7 @@
 		   (:cmpl ,(dpb 4 (byte 16 16) (movitz:tag :bignum 0))
 			  (:eax ,movitz:+other-type-offset+))
 		   (:jne 'nix)
-		   (:movl (:eax ,(bt:slot-offset 'movitz::movitz-bignum 'movitz::bigit0))
+		   (:movl (:eax ,(movitz::slot-offset 'movitz::movitz-bignum 'movitz::bigit0))
 			  :ecx)
 		   (:testl ,(logxor #xffffffff (mask-field (byte size 0) -1))
 			   :ecx)
@@ -445,7 +445,7 @@
       form
     (expt (movitz:movitz-eval base-number env)
 	  (movitz:movitz-eval power-number env))))
-    
+
 (define-compiler-macro %bignum-compare (x y)
   "Set ZF and CF according to (:cmpl y x), disregarding sign."
   `(with-inline-assembly (:returns :nothing :labels (eax-shortest-loop

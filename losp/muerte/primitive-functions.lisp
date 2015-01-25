@@ -1,17 +1,17 @@
 ;;;;------------------------------------------------------------------
-;;;; 
-;;;;    Copyright (C) 2001-2005, 
+;;;;
+;;;;    Copyright (C) 2001-2005,
 ;;;;    Department of Computer Science, University of Tromso, Norway.
-;;;; 
+;;;;
 ;;;;    For distribution policy, see the accompanying file COPYING.
-;;;; 
+;;;;
 ;;;; Filename:      primitive-functions.lisp
 ;;;; Description:   Some primitive-functions of the basic run-time
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Tue Oct  2 21:02:18 2001
-;;;;                
+;;;;
 ;;;; $Id: primitive-functions.lisp,v 1.71 2008-03-21 22:28:26 ffjeld Exp $
-;;;;                
+;;;;
 ;;;;------------------------------------------------------------------
 
 (require :muerte/basic-macros)
@@ -35,19 +35,19 @@
   "Call a function with 1 argument"
   (with-inline-assembly (:returns :nothing)
     (:movb 1 :cl)
-    (:jmp (:esi #.(bt:slot-offset 'movitz:movitz-funobj 'movitz:code-vector)))))
+    (:jmp (:esi #.(movitz::slot-offset 'movitz:movitz-funobj 'movitz:code-vector)))))
 
 (define-primitive-function trampoline-funcall%2op ()
   "Call a function with 2 arguments"
   (with-inline-assembly (:returns :nothing)
     (:movb 2 :cl)
-    (:jmp (:esi #.(bt:slot-offset 'movitz:movitz-funobj 'movitz:code-vector)))))
+    (:jmp (:esi #.(movitz::slot-offset 'movitz:movitz-funobj 'movitz:code-vector)))))
 
 (define-primitive-function trampoline-funcall%3op ()
   "Call a function with 3 arguments"
   (with-inline-assembly (:returns :nothing)
     (:movb 3 :cl)
-    (:jmp (:esi #.(bt:slot-offset 'movitz:movitz-funobj 'movitz:code-vector)))))
+    (:jmp (:esi #.(movitz::slot-offset 'movitz:movitz-funobj 'movitz:code-vector)))))
 
 (define-primitive-function trampoline-cl-dispatch-1or2 ()
   "Jump to the entry-point designated by :cl, which must be 1 or 2."
@@ -55,7 +55,7 @@
     (:subb 1 :cl)			; 1 or 2 => 0 or 1
     (:testb #xfe :cl)
     (:jnz 'mismatch)
-    (:jmp (:esi (:ecx 4) #.(bt:slot-offset 'movitz:movitz-funobj 'movitz:code-vector%1op)))
+    (:jmp (:esi (:ecx 4) #.(movitz::slot-offset 'movitz:movitz-funobj 'movitz:code-vector%1op)))
    mismatch
     (:addb 1 :cl)
     (:int 100)))
@@ -75,7 +75,7 @@
        (:movl (:esi (:offset movitz-funobj-standard-gf ,to))
 	      :esi)
        (:jmp (:esi  (:offset movitz-funobj ,forward))))))
-  
+
 (define-gf-dispatcher standard-gf-dispatcher ()
   "The code-vector of standard-gf instances." code-vector standard-gf-function)
 
@@ -135,20 +135,20 @@ it's supposed to have been found by e.g. dynamic-locate-catch-tag."
     (:locally (:bound (:edi (:edi-offset stack-bottom)) :eax))
     (:globally (:movl (:edi (:edi-offset unwind-protect-tag)) :ebx))
     (:locally (:movl (:edi (:edi-offset dynamic-env)) :ecx))
-    
+
    search-loop
     (:jecxz '(:sub-program () (:int 63)))
     ;; (:locally (:bound (:edi (:edi-offset stack-bottom)) :ecx))
 
     (:cmpl :ecx :eax)
     (:je 'found-dynamic-env)
-    
+
     (:cmpl :ebx (:ecx 4))		; unwind-protect entry?
     (:je 'found-unwind-protect)
-    
+
     ;; We don't need to check for and uninstall dynamic binding entries,
     ;; because uninstall is a NOP under naive deep binding.
-    
+
     (:movl (:ecx 12) :ecx)		; proceed search
     (:jmp 'search-loop)
    found-unwind-protect
@@ -165,14 +165,14 @@ Preserve EDX."
     (:ret)))
 
 (define-primitive-function dynamic-variable-uninstall (dynamic-env)
-  "Uninstall each dynamic binding between 'here' (i.e. the current 
+  "Uninstall each dynamic binding between 'here' (i.e. the current
 dynamic environment pointer) and the dynamic-env pointer provided in EDX.
 This must be done without affecting 'current values'! (i.e. eax, ebx, ecx, or CF),
 and also EDX must be preserved."
   (with-inline-assembly (:returns :nothing)
     ;; Default binding strategy is naive deep binding, so this is a NOP.
     (:ret)))
-    
+
 ;;;(define-primitive-function dynamic-variable-lookup (symbol)
 ;;;  "Load the dynamic value of SYMBOL into EAX."
 ;;;  (with-inline-assembly (:returns :multiple-values)
@@ -263,7 +263,7 @@ and also EDX must be preserved."
     (:movl (:ebx 3) :ebx)		;    ebx = (cdr ebx)
     (:movl (:ebx -1) :edx)		;    edx = (car ebx)
     (:movl (:ebx 3) :ebx)		;    ebx = (cdr ebx)
-    (:jne 'search-loop)			; 
+    (:jne 'search-loop)			;
     (:movl :edx :eax)
     (:testl :edi :edi)			; clear ZF
    search-failed
@@ -355,7 +355,7 @@ BUFFER-SIZE is the number of words in the buffer."
     (:testb 7 :al)
     (:jnz '(:sub-program ()
 	    (:int 63)))))
-  
+
 (defun malloc-cons-pointer ()
   "Return current cons-pointer in 8-byte units since buffer-start."
   (let ((x (%run-time-context-slot nil 'nursery-space)))
@@ -426,7 +426,7 @@ BUFFER-SIZE is the number of words in the buffer."
 	   fail
 	    (:int 63))))
     (do-it)))
-	    
+
 
 (define-primitive-function unbox-u32 ()
   "Load (ldb (byte 32 0) EAX) into ECX. Preserve EAX and EBX."
@@ -444,7 +444,7 @@ BUFFER-SIZE is the number of words in the buffer."
 	    (:jnz 'fail)
 	    (:cmpb ,(movitz:tag :bignum) (:eax ,movitz:+other-type-offset+))
 	    (:jne 'fail)
-	    (:movl (:eax ,(bt:slot-offset 'movitz::movitz-bignum 'movitz::bigit0))
+	    (:movl (:eax ,(movitz::slot-offset 'movitz::movitz-bignum 'movitz::bigit0))
 		   :ecx)
 	    (:ret)
 	   fail
@@ -502,7 +502,7 @@ BUFFER-SIZE is the number of words in the buffer."
     (:cmpb #.(movitz:tag :character) :al)
     (:jne '(:sub-program ()
 	    (:globally (:movl (:edi (:edi-offset complicated-class-of)) :esi))
-	    (:jmp (:esi #.(bt:slot-offset 'movitz::movitz-funobj 'movitz::code-vector%1op)))))
+	    (:jmp (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector%1op)))))
     (:movl (:ebx #.(movitz::class-object-offset 'character)) :eax)
     (:ret)))
 
@@ -528,15 +528,15 @@ BUFFER-SIZE is the number of words in the buffer."
 	    (:cmpb ,(movitz:tag :std-instance) :cl)
 	    (:jne 'not-std-instance)
 	    (,movitz:*compiler-nonlocal-lispval-read-segment-prefix*
-	     :movl (:eax ,(bt:slot-offset 'movitz::movitz-std-instance 'movitz::class)) :eax)
+	     :movl (:eax ,(movitz::slot-offset 'movitz::movitz-std-instance 'movitz::class)) :eax)
 	    (:ret)
 	   not-std-instance
 	    (:cmpw ,(+ (movitz:tag :funobj)
-		       (ash (bt:enum-value 'movitz::movitz-funobj-type :generic-function) 8))
+		       (ash (movitz::enum-value 'movitz::movitz-funobj-type :generic-function) 8))
 		   :cx)
 	    (:jne 'not-std-gf-instance)
 	    (,movitz:*compiler-nonlocal-lispval-read-segment-prefix*
-	     :movl (:eax ,(bt:slot-offset 'movitz::movitz-funobj-standard-gf
+	     :movl (:eax ,(movitz::slot-offset 'movitz::movitz-funobj-standard-gf
 					  'movitz::standard-gf-class))
 		   :eax)
 	    (:ret)
@@ -551,7 +551,7 @@ BUFFER-SIZE is the number of words in the buffer."
 	     :eax)
 	    (:ret)
 	   not-rtc
-	    
+
 	    (:globally (:movl (:edi (:edi-offset classes)) :ebx))
 	    (:cmpb ,(movitz:tag :bignum) :cl)
 	    (:jne 'not-bignum)
@@ -559,7 +559,7 @@ BUFFER-SIZE is the number of words in the buffer."
 	    (:ret)
 	   not-bignum
 	    (:globally (:movl (:edi (:edi-offset complicated-class-of)) :esi))
-	    (:jmp (:esi ,(bt:slot-offset 'movitz::movitz-funobj 'movitz::code-vector%1op))))))
+	    (:jmp (:esi ,(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector%1op))))))
     (do-it)))
 
 (defun complicated-class-of (object)
@@ -674,11 +674,11 @@ The number of values (untagged) is returned in ECX, even if CF=0."
   (with-inline-assembly (:returns :multiple-values)
     (:cmpb 1 :cl)
     (:jne 'not-one)
-    (:jmp (:esi #.(bt:slot-offset 'movitz::movitz-funobj 'movitz::code-vector%1op)))
+    (:jmp (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector%1op)))
    not-one
     (:cmpb 2 :cl)
     (:jne 'not-two)
-    (:jmp (:esi #.(bt:slot-offset 'movitz::movitz-funobj 'movitz::code-vector%2op)))
+    (:jmp (:esi #.(movitz::slot-offset 'movitz::movitz-funobj 'movitz::code-vector%2op)))
    not-two
     (:int 100)))
 
@@ -698,7 +698,7 @@ Final target is in raw-scratch0. Doesn't modify current-values."
 					; ..in case it's stack-allocated.
     (:locally (:movl :edx (:edi (:edi-offset scratch1)))) ; non-local stack-mode target entry.
     (:movl :edi :ebp)			; enter non-local jump stack mode.
-    (:movl :edx :esp)			; 
+    (:movl :edx :esp)			;
     (:movl (:esp) :edx)			; target stack-frame EBP
     (:movl (:edx -4) :esi)		; get target funobj into ESI
     (:movl (:esp 8) :edx)		; target jumper number
@@ -714,14 +714,14 @@ Final target is in raw-scratch0. Doesn't modify current-values."
     (:movl :ecx (:ebx (:offset movitz-funobj code-vector)))
 
     (:movl (:eax (:offset movitz-funobj code-vector%1op)) :ecx)
-    (:movl :ecx (:ebx (:offset movitz-funobj code-vector%1op)))    
+    (:movl :ecx (:ebx (:offset movitz-funobj code-vector%1op)))
 
     (:movl (:eax (:offset movitz-funobj code-vector%2op)) :ecx)
-    (:movl :ecx (:ebx (:offset movitz-funobj code-vector%2op)))    
+    (:movl :ecx (:ebx (:offset movitz-funobj code-vector%2op)))
 
     (:movl (:eax (:offset movitz-funobj code-vector%3op)) :ecx)
     (:movl :ecx (:ebx (:offset movitz-funobj code-vector%3op)))
-    
+
     (:movl (:eax (:offset movitz-funobj num-jumpers)) :edx)
     (:andl #xffff :edx)
     (:jnz 'copy-jumpers)
@@ -774,12 +774,12 @@ starting at (:ebp -16)."
 
     (:cmpl :edx :ecx)			; might occur if key-arg-pos is 0 or 1,
     (:jbe 'check-arg0-arg1)		; and numargs is 2 or 3.
-    
+
    scan-args-loop
     ;; Load current argument keyword and value into EAX and EBX
     (:movl (:ebp :edx 12) :eax)
     (:movl (:ebp :edx 8) :ebx)
-    
+
    start-keyword-search
     ;; EAX: (presumed) keyword, EBX corresponding value.
     (:globally (:cmpl :eax (:edi (:edi-offset allow-other-keys-symbol))))
@@ -809,14 +809,14 @@ starting at (:ebp -16)."
 	   (:jmp 'finished-keyword-search)))
     (:addl 4 :ecx)
     (:jmp 'position-search-loop)
-    
+
    found-keyword
     (:subw (:esi (:offset movitz-funobj num-jumpers)) :cx)
     (:negl :ecx)
     (:movl :ebx (:ebp -16 (:ecx 2)))
     (:globally (:movl (:edi (:edi-offset t-symbol)) :ebx))
     (:movl :ebx (:ebp -16 (:ecx 2) -4))
-    
+
    finished-keyword-search
     (:addl 8 :edx)
     (:locally (:cmpl :edx (:edi (:edi-offset raw-scratch0)))) ; more args?
@@ -833,7 +833,7 @@ starting at (:ebp -16)."
     (:jc '(:sub-program (search-ebx)
 	   ;; Search one more keyword, in arg1 and last on-stack.
 	   (:movl (:ebp -12) :eax)
-	   (:movl (:ebp :edx 8) :ebx)	    
+	   (:movl (:ebp :edx 8) :ebx)
 	   (:jmp 'start-keyword-search)))
     ;; if there was :allow-other-keys t, clear the unknown-keyword error flag.
     (:locally (:movl (:edi (:edi-offset scratch2)) :eax))
@@ -848,4 +848,3 @@ starting at (:ebp -16)."
   "foo"
   (with-inline-assembly (:returns :multiple-values)
     (:ret)))
-

@@ -417,7 +417,7 @@ respect to multiple threads."
 (define-compiler-macro %bignum-bigits (x)
   `(with-inline-assembly (:returns :eax :type (unsigned-byte 14))
      (:compile-form (:result-mode :eax) ,x)
-     (:movzxw (:eax ,(slot-offset 'movitz::movitz-bignum 'movitz::length))
+     (:movzxw (:eax ,(movitz::slot-offset 'movitz::movitz-bignum 'movitz::length))
 	      :eax)
      (:testb 3 :al)			; Just to be sure..
      (:jnz '(:sub-program () (:int 63)))))
@@ -491,7 +491,7 @@ respect to multiple threads."
 	    (movitz:code-vector-word
 	     `(with-inline-assembly (:returns :eax)
 		(:compile-form (:result-mode :eax) ,value)
-		(:leal (:eax ,(slot-offset 'movitz:movitz-basic-vector 'movitz::data)) :ecx)
+		(:leal (:eax ,(movitz::slot-offset 'movitz:movitz-basic-vector 'movitz::data)) :ecx)
 		(:locally (:movl :ecx (:edi (:edi-offset ,slot-name)))))))
 	;; FIXME
 	form))))
