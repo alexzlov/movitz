@@ -1,17 +1,17 @@
 ;;;;------------------------------------------------------------------
-;;;; 
-;;;;    Copyright (C) 2001-2005, 
+;;;;
+;;;;    Copyright (C) 2001-2005,
 ;;;;    Department of Computer Science, University of Tromso, Norway.
-;;;; 
+;;;;
 ;;;;    For distribution policy, see the accompanying file COPYING.
-;;;; 
+;;;;
 ;;;; Filename:      more-macros.lisp
-;;;; Description:   
+;;;; Description:
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Fri Jun  7 15:05:57 2002
-;;;;                
+;;;;
 ;;;; $Id: more-macros.lisp,v 1.47 2008-07-09 20:20:04 ffjeld Exp $
-;;;;                
+;;;;
 ;;;;------------------------------------------------------------------
 
 (require :muerte/setf)
@@ -38,7 +38,7 @@
       `(with-inline-assembly (:returns :ebx)
 	 (:compile-form (:result-mode :eax) ,place)
 	 (:globally (:call (:edi (:edi-offset fast-cdr-car))))
-	 (:lexical-store ,place :eax :protect-registers (:ebx)))      
+	 (:lexical-store ,place :eax :protect-registers (:ebx)))
     form))
 
 (defmacro push (&environment env item place)
@@ -417,7 +417,7 @@ respect to multiple threads."
 (define-compiler-macro %bignum-bigits (x)
   `(with-inline-assembly (:returns :eax :type (unsigned-byte 14))
      (:compile-form (:result-mode :eax) ,x)
-     (:movzxw (:eax ,(bt:slot-offset 'movitz::movitz-bignum 'movitz::length))
+     (:movzxw (:eax ,(slot-offset 'movitz::movitz-bignum 'movitz::length))
 	      :eax)
      (:testb 3 :al)			; Just to be sure..
      (:jnz '(:sub-program () (:int 63)))))
@@ -432,7 +432,7 @@ respect to multiple threads."
   (if (not (movitz:movitz-constantp slot-name env))
       form
     (let* ((slot-name (movitz::eval-form slot-name env))
-	   (slot-type (bt:binary-slot-type 'movitz::movitz-run-time-context
+	   (slot-type (binary-slot-type 'movitz::movitz-run-time-context
 					   (intern (symbol-name slot-name) :movitz))))
       (if (or (and (movitz:movitz-constantp context env)
 		   (eq nil (movitz:movitz-eval context env)))
@@ -453,7 +453,7 @@ respect to multiple threads."
 	   `(with-inline-assembly (:returns :eax)
 	      (:compile-form (:result-mode :eax) ,context)
 	      (,movitz:*compiler-nonlocal-lispval-read-segment-prefix*
-	       :movl (:eax :edi (:offset movitz-run-time-context ,slot-name 
+	       :movl (:eax :edi (:offset movitz-run-time-context ,slot-name
 					 ,(- (movitz:tag :other)))) :eax)))
 	  (movitz::code-vector-word
 	   `(with-inline-assembly (:returns :eax)
@@ -468,13 +468,13 @@ respect to multiple threads."
 	      (,movitz:*compiler-nonlocal-lispval-read-segment-prefix*
 	       :movl (:eax :edi (:offset movitz-run-time-context ,slot-name
 					 ,(- (movitz:tag :other)))) :ecx))))))))
-	
+
 
 (define-compiler-macro (setf %run-time-context-slot) (&whole form &environment env value context slot-name)
   (if (not (movitz:movitz-constantp slot-name env))
       form
     (let* ((slot-name (movitz::eval-form slot-name env))
-	   (slot-type (bt:binary-slot-type 'movitz::movitz-run-time-context
+	   (slot-type (binary-slot-type 'movitz::movitz-run-time-context
 					   (intern (symbol-name slot-name) :movitz))))
       (if (or (and (movitz:movitz-constantp context env)
 		   (eq nil (movitz:movitz-eval context env)))
@@ -491,7 +491,7 @@ respect to multiple threads."
 	    (movitz:code-vector-word
 	     `(with-inline-assembly (:returns :eax)
 		(:compile-form (:result-mode :eax) ,value)
-		(:leal (:eax ,(bt:slot-offset 'movitz:movitz-basic-vector 'movitz::data)) :ecx)
+		(:leal (:eax ,(slot-offset 'movitz:movitz-basic-vector 'movitz::data)) :ecx)
 		(:locally (:movl :ecx (:edi (:edi-offset ,slot-name)))))))
 	;; FIXME
 	form))))

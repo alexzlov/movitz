@@ -1,16 +1,16 @@
 ;;;;------------------------------------------------------------------
-;;;; 
+;;;;
 ;;;;    Copyright (C) 20012000, 2002-2004,
 ;;;;    Department of Computer Science, University of Tromso, Norway
-;;;; 
+;;;;
 ;;;; Filename:      movitz.lisp
-;;;; Description:   
+;;;; Description:
 ;;;; Author:        Frode Vatvedt Fjeld <frodef@acm.org>
 ;;;; Created at:    Mon Oct  9 20:52:58 2000
 ;;;; Distribution:  See the accompanying file COPYING.
-;;;;                
+;;;;
 ;;;; $Id: movitz.lisp,v 1.12 2007-03-13 20:40:10 ffjeld Exp $
-;;;;                
+;;;;
 ;;;;------------------------------------------------------------------
 
 (in-package movitz)
