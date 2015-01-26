@@ -11,4 +11,4 @@ There seems to be a path issue. Before loading, proceed to movitz root directory
 
 finally
 ```
-qemu -fda foo.img -boot a
+qemu-system-i386 -fda foo.img -boot a

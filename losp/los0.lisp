@@ -31,7 +31,7 @@
 
 (require :lib/threading)
 
-;; (require :lice-0.1/all)
+ ;;(require :lice-0.1/all)
 
 (defpackage los0
   (:use #:common-lisp
